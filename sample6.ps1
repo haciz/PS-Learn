@@ -10,7 +10,7 @@ function Get-KvInfo {
         [string[]]$kv,
         #switch to turnon error logging
         [switch]$ErrorLog,
-        [string]$LogFile = '/Users/stefan/PS-Learn/log.txt'
+        [string]$LogFile = '/Users/path/PS-Learn/log.txt'
     )
     
     begin {
