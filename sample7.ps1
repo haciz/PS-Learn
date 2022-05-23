@@ -11,7 +11,7 @@ function Get-KvInfo {
         #switch to turnon error logging
         [switch]$ErrorLog,
         #This is log file blabla
-        [string]$LogFile = '/Users/path/PS-Learn/log.txt'
+        [string]$LogFile = '/Users/stefan/PowerShell/PS-Learn/log.txt'
     )
     
     begin {
@@ -26,7 +26,8 @@ function Get-KvInfo {
     
     process {
         foreach($c in $kv) {
-            $kk=Get-AzKeyVault -VaultName $c
+            try{
+            $kk=Get-AzKeyVault -VaultName $c -ErrorAction Stop -ErrorAction CurrentError
 
             $Prop=[ordered]@{
                 'Name'=$c
@@ -34,13 +35,21 @@ function Get-KvInfo {
                 'SKU'=$kk.SKU
                 'Resource-ID'=$kk.ResourceId
                 'Soft Delete Enabled?'=$kk.EnableSoftDelete
+            
             }
             $object=New-Object -TypeName PSObject -Property $Prop
             write-output $object
-        }
-    }
+            }
     
-    end {
+        catch{
+            write-warning 'Oh no this is a test warrning'
+            If ($ErrorLog){
+                get-date | out-file $LogFile -force
+                $kv | out-file $LogFile -append
+                $currenterror | out-file $LogFile -append
+            }
         
+             }
+        }
     }
 }
